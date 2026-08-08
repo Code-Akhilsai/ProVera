@@ -68,7 +68,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans selection:bg-blue-600 selection:text-white">
       {/* Sidebar Navigation */}
-      <aside className="w-64 bg-slate-950 border-r border-slate-900 flex flex-col justify-between shrink-0 hidden md:flex">
+      <aside className="w-64 bg-slate-950 border-r border-slate-900 flex flex-col justify-between shrink-0 md:flex">
         <div className="p-6 space-y-8">
           {/* Logo Brand */}
           <div
@@ -131,7 +131,7 @@ export default function Profile() {
       </aside>
 
       {/* Main Wrapper */}
-      <div className="flex-grow flex flex-col justify-between bg-slate-950 min-w-0">
+      <div className="grow flex flex-col justify-between bg-slate-950 min-w-0">
         {/* Top Header Bar */}
         <header className="h-20 border-b border-slate-900 px-6 lg:px-10 flex items-center justify-between bg-slate-950/80 backdrop-blur-md sticky top-0 z-20">
           <div className="flex items-center space-x-4">
@@ -164,7 +164,7 @@ export default function Profile() {
         </header>
 
         {/* Profile Content Workspace */}
-        <main className="flex-grow p-6 lg:p-10 space-y-6 max-w-5xl w-full mx-auto">
+        <main className="grow p-6 lg:p-10 space-y-6 max-w-5xl w-full mx-auto">
           {/* Header Title & Steps */}
           <div className="space-y-6">
             <div className="space-y-1">
