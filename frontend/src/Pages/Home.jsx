@@ -10,10 +10,12 @@ import {
   FaClipboardList,
   FaCheck,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("register");
+  const nav = useNavigate();
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-600 selection:text-white">
@@ -45,12 +47,12 @@ export default function Home() {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <a
-              href="#portal"
+            <button
+              onClick={() => nav("/login")}
               className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-blue-600/20 transition-all"
             >
               Sign In
-            </a>
+            </button>
           </div>
 
           <div className="md:hidden">
@@ -133,19 +135,15 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
-              <a
-                href="#portal"
+              <button
+                onClick={() => nav("/register")}
                 className="w-full sm:w-auto inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-4 rounded-xl shadow-xl shadow-blue-600/20 transition-all group"
               >
                 <span>Get Started</span>
-                <FaArrowRight className="ml-2 text-sm group-hover:translate-x-1 transition-transform" />
-              </a>
-              <a
-                href="#workflow"
-                className="w-full sm:w-auto inline-flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold px-8 py-4 rounded-xl border border-slate-800 transition-colors"
-              >
+              </button>
+              <button className="w-full sm:w-auto inline-flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold px-8 py-4 rounded-xl border border-slate-800 transition-colors">
                 View Architecture
-              </a>
+              </button>
             </div>
 
             {/* Quick Metrics Bar */}
