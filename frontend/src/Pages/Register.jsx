@@ -10,13 +10,16 @@ import {
   FaCheck,
 } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const nav = useNavigate();
 
   const [formData, setFormData] = useState({
-    fullName: "",
+    full_name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -26,8 +29,28 @@ export default function Register() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/v1/register",
+        {
+          full_name: formData.full_name,
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      if (res.status !== 201) return alert("user failed to register");
+
+      nav("/provider-dashboard");
+    } catch (error) {
+      return console.log(error);
+    }
   };
 
   return (
@@ -136,9 +159,9 @@ export default function Register() {
                   </div>
                   <input
                     type="text"
-                    name="fullName"
+                    name="full_name"
                     required
-                    value={formData.fullName}
+                    value={formData.full_name}
                     onChange={handleChange}
                     placeholder="John Doe"
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 pl-10 text-xs sm:text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 transition-colors"
