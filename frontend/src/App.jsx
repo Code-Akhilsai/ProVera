@@ -7,6 +7,8 @@ import { Routes, Route } from "react-router-dom";
 import ProviderDashboard from "./Provider/ProviderDashboard";
 import UploadDocuments from "./Provider/UploadDocument";
 import Submit from "./Provider/Submit";
+import Adminlogin from "./Admin/Adminlogin";
+import AdminDashboard from "./Admin/Admindashboard";
 function App() {
   return (
     <Routes>
@@ -17,6 +19,8 @@ function App() {
       <Route path={"/profile"} element={<Profile />} />
       <Route path={"/upload-documents"} element={<UploadDocuments />} />
       <Route path={"/submit"} element={<Submit />} />
+      <Route path={"/adminlogin"} element={<Adminlogin />} />
+      <Route path={"/admin-dashboard"} element={<AdminDashboard />} />
     </Routes>
   );
 }

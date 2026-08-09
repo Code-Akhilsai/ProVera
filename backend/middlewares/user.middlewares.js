@@ -14,6 +14,7 @@ const userMiddleware = async (req, res, next) => {
     const decode = jwt.verify(token, process.env.JWT_SECREATE_KEY);
 
     req.user = decode;
+
     next();
   } catch (error) {
     return res.status(403).json({ message: "user not verified" });
