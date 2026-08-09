@@ -140,7 +140,7 @@ export const submitCurrentApplication = async (req, res) => {
           submittedAt: new Date(),
         },
       },
-      { new: true },
+      { returnDocument: "after" },
     );
 
     if (!application) {
