@@ -1,28 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaShieldAlt,
   FaHome,
   FaUser,
-  FaFileAlt,
-  FaClipboardList,
   FaBell,
-  FaQuestionCircle,
-  FaSignOutAlt,
-  FaHeadset,
   FaArrowRight,
   FaLock,
   FaCheck,
+  FaBars,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { buildProviderMenuItems } from "./providerNavigation.jsx";
+import ProviderSidebar from "./ProviderSidebar.jsx";
 
 export default function Profile() {
   const nav = useNavigate();
   const [activeTab, setActiveTab] = useState("My Profile");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const menuItems = buildProviderMenuItems({
+    nav,
+    setActiveTab,
+    page: "profile",
+  });
 
   // Form State matching the design
   const [formData, setFormData] = useState({
-    fullName: "Akhil Sai",
-    email: "akhilsai@example.com",
+    fullName: "",
+    email: "",
     phone: "",
     serviceCategory: "",
     experience: "",
@@ -51,92 +56,83 @@ export default function Profile() {
     });
   };
 
-  const menuItems = [
-    { name: "Dashboard", icon: <FaHome />, action: () => nav("/dashboard") },
-    { name: "My Profile", icon: <FaUser /> },
-    { name: "Documents", icon: <FaFileAlt />, action: () => nav("/documents") },
-    {
-      name: "Application Status",
-      icon: <FaClipboardList />,
-      action: () => nav("/status"),
-    },
-    { name: "Notifications", icon: <FaBell /> },
-    { name: "Help & Support", icon: <FaQuestionCircle /> },
-    { name: "Logout", icon: <FaSignOutAlt />, action: () => nav("/login") },
-  ];
+  const saveProfile = async () => {
+    try {
+      const selectedSkills = Object.entries(formData.skills)
+        .filter(([, isSelected]) => isSelected)
+        .map(([skillKey]) => skillKey);
+
+      const payload = {
+        phone: formData.phone,
+        service_info: {
+          service: formData.serviceCategory,
+          experience: formData.experience,
+          skills: selectedSkills,
+        },
+        location_info: {
+          state: formData.state,
+          city: formData.city,
+          Address: formData.address,
+          pincode: formData.pincode,
+        },
+      };
+
+      await axios.post("http://localhost:3000/api/v1/application", payload, {
+        withCredentials: true,
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/v1/profile",
+          {},
+          {
+            withCredentials: true,
+          },
+        );
+
+        setFormData((previous) => ({
+          ...previous,
+          fullName: response.data.user.full_name,
+          email: response.data.user.email,
+        }));
+      } catch (error) {
+        console.error("Failed to load profile", error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans selection:bg-blue-600 selection:text-white">
       {/* Sidebar Navigation */}
-      <aside className="w-64 bg-slate-950 border-r border-slate-900 flex flex-col justify-between shrink-0 md:flex">
-        <div className="p-6 space-y-8">
-          {/* Logo Brand */}
-          <div
-            className="flex items-center space-x-3 cursor-pointer"
-            onClick={() => nav("/")}
-          >
-            <div className="bg-blue-600 text-white p-2.5 rounded-xl shadow-lg shadow-blue-900/30">
-              <FaShieldAlt className="text-lg" />
-            </div>
-            <div>
-              <span className="text-xl font-bold tracking-tight text-white block leading-none">
-                ProVera
-              </span>
-              <span className="text-[10px] text-slate-400 font-medium tracking-widest uppercase mt-1 block">
-                Provider Portal
-              </span>
-            </div>
-          </div>
-
-          {/* Navigation Links */}
-          <nav className="space-y-1.5">
-            {menuItems.map((item, idx) => {
-              const isActive = activeTab === item.name;
-              return (
-                <button
-                  key={idx}
-                  onClick={() => {
-                    if (item.action) item.action();
-                    else setActiveTab(item.name);
-                  }}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-medium transition-colors cursor-pointer ${isActive ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"}`}
-                >
-                  <span className="text-sm">{item.icon}</span>
-                  <span>{item.name}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Need Help Box */}
-        <div className="p-4 m-4 bg-slate-900/80 border border-slate-800/80 rounded-2xl space-y-2">
-          <div className="flex items-center space-x-2 text-white font-medium text-xs">
-            <FaHeadset className="text-blue-500" />
-            <span>Need Help?</span>
-          </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed">
-            We're here to help you
-          </p>
-          <p className="text-[11px] font-semibold text-white">
-            +91 98765 43210
-          </p>
-          <a
-            href="mailto:support@provera.com"
-            className="text-[11px] text-blue-400 hover:underline block truncate"
-          >
-            support@provera.com
-          </a>
-        </div>
-      </aside>
+      <ProviderSidebar
+        menuItems={menuItems}
+        activeTab={activeTab}
+        onLogoClick={() => nav("/provider-dashboard")}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
       {/* Main Wrapper */}
       <div className="grow flex flex-col justify-between bg-slate-950 min-w-0">
         {/* Top Header Bar */}
-        <header className="h-20 border-b border-slate-900 px-6 lg:px-10 flex items-center justify-between bg-slate-950/80 backdrop-blur-md sticky top-0 z-20">
-          <div className="flex items-center space-x-4">
+        <header className="h-20 border-b border-slate-900 px-4 sm:px-6 lg:px-10 flex items-center justify-between bg-slate-950/80 backdrop-blur-md sticky top-0 z-20">
+          <div className="flex items-center space-x-3">
             <button
-              onClick={() => nav("/dashboard")}
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden w-9 h-9 shrink-0 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
+            >
+              <FaBars className="text-sm" />
+            </button>
+            <button
+              onClick={() => nav("/provider-dashboard")}
               className="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center space-x-1"
             >
               <span>&lt; Back to Dashboard</span>
@@ -156,7 +152,10 @@ export default function Profile() {
               />
               <div className="hidden sm:block text-left">
                 <span className="text-xs font-bold text-white block">
-                  Akhil Sai
+                  {formData.fullName || "Loading..."}
+                </span>
+                <span className="text-[10px] text-slate-400 block">
+                  {formData.email || "Fetching email..."}
                 </span>
               </div>
             </div>
@@ -164,7 +163,7 @@ export default function Profile() {
         </header>
 
         {/* Profile Content Workspace */}
-        <main className="grow p-6 lg:p-10 space-y-6 max-w-5xl w-full mx-auto">
+        <main className="grow p-4 sm:p-6 lg:p-10 space-y-6 max-w-5xl w-full mx-auto">
           {/* Header Title & Steps */}
           <div className="space-y-6">
             <div className="space-y-1">
@@ -225,10 +224,15 @@ export default function Profile() {
 
           {/* Form Sections */}
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              alert("Profile details saved successfully!");
-              nav("/dashboard");
+              try {
+                await saveProfile();
+                alert("Profile details saved successfully!");
+                nav("/upload-documents");
+              } catch (error) {
+                console.error("Failed to save application", error);
+              }
             }}
             className="space-y-6"
           >
@@ -249,10 +253,10 @@ export default function Profile() {
                     Full Name
                   </label>
                   <input
+                    readOnly
                     type="text"
                     name="fullName"
                     value={formData.fullName}
-                    onChange={handleInputChange}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500"
                   />
                 </div>
@@ -261,10 +265,10 @@ export default function Profile() {
                     Email Address
                   </label>
                   <input
+                    readOnly
                     type="email"
                     name="email"
                     value={formData.email}
-                    onChange={handleInputChange}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500"
                   />
                 </div>

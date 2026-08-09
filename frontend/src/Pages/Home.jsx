@@ -11,11 +11,21 @@ import {
   FaCheck,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("register");
   const nav = useNavigate();
+
+  useEffect(() => {
+    window.history.pushState(null, "", window.location.href);
+    const blockBack = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+    window.addEventListener("popstate", blockBack);
+    return () => window.removeEventListener("popstate", blockBack);
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-600 selection:text-white">

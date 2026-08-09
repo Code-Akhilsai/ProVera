@@ -3,6 +3,10 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "../db/connectDB.js";
 import userRouter from "../routes/user.routes.js";
+import loginRouter from "../routes/login.routes.js";
+import profileRouter from "../routes/profile.routes.js";
+import applicationRouter from "../routes/application.routes.js";
+import logoutRouter from "../routes/logout.routes.js";
 
 dotenv.config();
 const app = express();
@@ -24,6 +28,10 @@ await connectDB();
 //routes
 
 app.use("/api/v1", userRouter);
+app.use("/api/v1", loginRouter);
+app.use("/api/v1", profileRouter);
+app.use("/api/v1", applicationRouter);
+app.use("/api/v1", logoutRouter);
 
 app.listen(port, () =>
   console.log(`Server is running on port http://localhost:${port}`),

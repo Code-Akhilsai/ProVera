@@ -4,128 +4,121 @@ import {
   FaHome,
   FaUser,
   FaFileAlt,
-  FaClipboardList,
   FaBell,
-  FaQuestionCircle,
-  FaSignOutAlt,
-  FaHeadset,
   FaArrowRight,
   FaCheck,
   FaFileUpload,
-  FaEye,
-  FaLock,
-  FaShieldVirus,
   FaAward,
   FaIdCard,
+  FaBars,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { buildProviderMenuItems } from "./providerNavigation.jsx";
+import ProviderSidebar from "./ProviderSidebar.jsx";
 
 export default function UploadDocument() {
   const nav = useNavigate();
   const [activeTab, setActiveTab] = useState("Documents");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const menuItems = buildProviderMenuItems({
+    nav,
+    setActiveTab,
+    page: "documents",
+  });
 
   // File upload states matching the design mockup
   const [documents, setDocuments] = useState({
-    aadhaar: { status: "Uploaded", fileName: "Aadhaar_Front.jpg" },
-    pan: { status: "Uploaded", fileName: "PAN_Card.jpg" },
-    experience: { status: "Pending", fileName: null },
-    address: { status: "Pending", fileName: null },
-    profilePhoto: { status: "Pending", fileName: null },
+    aadhaar: { status: "Pending", fileName: null, file: null },
+    pan: { status: "Pending", fileName: null, file: null },
+    experience: { status: "Pending", fileName: null, file: null },
+    address: { status: "Pending", fileName: null, file: null },
+    profilePhoto: { status: "Pending", fileName: null, file: null },
   });
 
-  const handleSimulateUpload = (docKey, sampleName) => {
+  const documentFieldMap = {
+    aadhaar: "aadhaar",
+    pan: "pan",
+    experience: "experienceCertificate",
+    address: "addressProof",
+    profilePhoto: "profilePhoto",
+  };
+
+  const handleFileSelect = (docKey, file) => {
+    if (!file) return;
     setDocuments((prev) => ({
       ...prev,
-      [docKey]: { status: "Uploaded", fileName: sampleName },
+      [docKey]: {
+        status: "Selected",
+        fileName: file.name,
+        file,
+      },
     }));
   };
 
-  const menuItems = [
-    { name: "Dashboard", icon: <FaHome />, action: () => nav("/dashboard") },
-    { name: "My Profile", icon: <FaUser />, action: () => nav("/profile") },
-    { name: "Documents", icon: <FaFileAlt /> },
-    {
-      name: "Application Status",
-      icon: <FaClipboardList />,
-      action: () => nav("/status"),
-    },
-    { name: "Notifications", icon: <FaBell /> },
-    { name: "Help & Support", icon: <FaQuestionCircle /> },
-    { name: "Logout", icon: <FaSignOutAlt />, action: () => nav("/login") },
-  ];
+  const renderUploadControl = (docKey) => {
+    return (
+      <label className="border border-dashed border-slate-700 hover:border-blue-500 bg-slate-900 hover:bg-blue-950/30 px-6 py-3 rounded-xl flex items-center space-x-2 text-slate-300 hover:text-blue-400 text-xs font-medium transition-colors cursor-pointer shrink-0">
+        <FaFileUpload className="text-blue-500" />
+        <span>Upload File</span>
+        <input
+          type="file"
+          accept="image/*,application/pdf"
+          className="hidden"
+          onChange={(event) =>
+            handleFileSelect(docKey, event.target.files?.[0])
+          }
+        />
+      </label>
+    );
+  };
+
+  const saveDocuments = async () => {
+    const formData = new FormData();
+    let hasAnyFile = false;
+
+    Object.entries(documentFieldMap).forEach(([stateKey, fieldName]) => {
+      const file = documents[stateKey].file;
+      if (file) {
+        hasAnyFile = true;
+        formData.append(fieldName, file);
+      }
+    });
+
+    if (!hasAnyFile) {
+      alert("Select at least one document to upload.");
+      return;
+    }
+
+    await axios.post("http://localhost:3000/api/v1/application", formData, {
+      withCredentials: true,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans selection:bg-blue-600 selection:text-white">
       {/* Sidebar Navigation */}
-      <aside className="w-64 bg-slate-950 border-r border-slate-900 flex flex-col justify-between shrink-0 md:flex">
-        <div className="p-6 space-y-8">
-          {/* Logo Brand */}
-          <div
-            className="flex items-center space-x-3 cursor-pointer"
-            onClick={() => nav("/")}
-          >
-            <div className="bg-blue-600 text-white p-2.5 rounded-xl shadow-lg shadow-blue-900/30">
-              <FaShieldAlt className="text-lg" />
-            </div>
-            <div>
-              <span className="text-xl font-bold tracking-tight text-white block leading-none">
-                ProVera
-              </span>
-              <span className="text-[10px] text-slate-400 font-medium tracking-widest uppercase mt-1 block">
-                Provider Portal
-              </span>
-            </div>
-          </div>
-
-          {/* Navigation Links */}
-          <nav className="space-y-1.5">
-            {menuItems.map((item, idx) => {
-              const isActive = activeTab === item.name;
-              return (
-                <button
-                  key={idx}
-                  onClick={() => {
-                    if (item.action) item.action();
-                    else setActiveTab(item.name);
-                  }}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-medium transition-colors cursor-pointer ${isActive ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"}`}
-                >
-                  <span className="text-sm">{item.icon}</span>
-                  <span>{item.name}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Need Help Box */}
-        <div className="p-4 m-4 bg-slate-900/80 border border-slate-800/80 rounded-2xl space-y-2">
-          <div className="flex items-center space-x-2 text-white font-medium text-xs">
-            <FaHeadset className="text-blue-500" />
-            <span>Need Help?</span>
-          </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed">
-            We're here to help you
-          </p>
-          <p className="text-[11px] font-semibold text-white">
-            +91 98765 43210
-          </p>
-          <a
-            href="mailto:support@provera.com"
-            className="text-[11px] text-blue-400 hover:underline block truncate"
-          >
-            support@provera.com
-          </a>
-        </div>
-      </aside>
+      <ProviderSidebar
+        menuItems={menuItems}
+        activeTab={activeTab}
+        onLogoClick={() => nav("/provider-dashboard")}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
       {/* Main Wrapper */}
       <div className="grow flex flex-col justify-between bg-slate-950 min-w-0">
         {/* Top Header Bar */}
-        <header className="h-20 border-b border-slate-900 px-6 lg:px-10 flex items-center justify-between bg-slate-950/80 backdrop-blur-md sticky top-0 z-20">
-          <div className="flex items-center space-x-4">
+        <header className="h-20 border-b border-slate-900 px-4 sm:px-6 lg:px-10 flex items-center justify-between bg-slate-950/80 backdrop-blur-md sticky top-0 z-20">
+          <div className="flex items-center space-x-3">
             <button
-              onClick={() => nav("/dashboard")}
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden w-9 h-9 shrink-0 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
+            >
+              <FaBars className="text-sm" />
+            </button>
+            <button
+              onClick={() => nav("/provider-dashboard")}
               className="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center space-x-1"
             >
               <span>&lt; Back to Dashboard</span>
@@ -153,7 +146,7 @@ export default function UploadDocument() {
         </header>
 
         {/* Upload Documents Content Workspace */}
-        <main className="grow p-6 lg:p-10 space-y-6 max-w-5xl w-full mx-auto">
+        <main className="grow p-4 sm:p-6 lg:p-10 space-y-6 max-w-5xl w-full mx-auto">
           {/* Header Title & Steps */}
           <div className="space-y-6">
             <div className="space-y-1">
@@ -233,18 +226,18 @@ export default function UploadDocument() {
 
           {/* Main Vault Container */}
           <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
-            {/* Required Documents Header */}
+            {/* Documents Header */}
             <div className="flex items-center space-x-3 border-b border-slate-800/80 pb-4">
               <div className="w-8 h-8 rounded-lg bg-blue-950 text-blue-400 flex items-center justify-center text-sm">
                 <FaFileAlt />
               </div>
               <div>
                 <h2 className="text-sm font-bold text-white tracking-wide">
-                  Required Documents
+                  Documents
                 </h2>
                 <p className="text-[11px] text-slate-400">
-                  Please upload clear and valid documents. File size should be
-                  less than 5MB. Accepted formats: JPG, PNG, PDF.
+                  Upload any documents you have. File size should be less than
+                  5MB. Accepted formats: JPG, PNG, PDF.
                 </p>
               </div>
             </div>
@@ -260,16 +253,15 @@ export default function UploadDocument() {
                   <div className="space-y-0.5">
                     <h3 className="text-xs font-bold text-white flex items-center space-x-1.5">
                       <span>Aadhaar Card</span>
-                      <span className="text-rose-500">*</span>
                     </h3>
                     <p className="text-[11px] text-slate-400">
                       Upload front or back side of your Audhaar card
                     </p>
-                    {documents.aadhaar.status === "Uploaded" && (
+                    {documents.aadhaar.status !== "Pending" && (
                       <div className="flex items-center space-x-2 pt-1">
                         <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-900/50 text-[10px] font-semibold px-2 py-0.5 rounded flex items-center space-x-1">
                           <FaCheck className="text-[9px]" />
-                          <span>Uploaded</span>
+                          <span>Selected</span>
                         </span>
                         <span className="text-[11px] text-slate-300 font-medium">
                           {documents.aadhaar.fileName}
@@ -278,9 +270,7 @@ export default function UploadDocument() {
                     )}
                   </div>
                 </div>
-                <button className="w-10 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 flex items-center justify-center transition-colors cursor-pointer shrink-0">
-                  <FaEye className="text-xs" />
-                </button>
+                {renderUploadControl("aadhaar")}
               </div>
 
               {/* 2. PAN Card */}
@@ -292,16 +282,15 @@ export default function UploadDocument() {
                   <div className="space-y-0.5">
                     <h3 className="text-xs font-bold text-white flex items-center space-x-1.5">
                       <span>PAN Card</span>
-                      <span className="text-rose-500">*</span>
                     </h3>
                     <p className="text-[11px] text-slate-400">
                       Upload a clear copy of your PAN card
                     </p>
-                    {documents.pan.status === "Uploaded" && (
+                    {documents.pan.status !== "Pending" && (
                       <div className="flex items-center space-x-2 pt-1">
                         <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-900/50 text-[10px] font-semibold px-2 py-0.5 rounded flex items-center space-x-1">
                           <FaCheck className="text-[9px]" />
-                          <span>Uploaded</span>
+                          <span>Selected</span>
                         </span>
                         <span className="text-[11px] text-slate-300 font-medium">
                           {documents.pan.fileName}
@@ -310,9 +299,7 @@ export default function UploadDocument() {
                     )}
                   </div>
                 </div>
-                <button className="w-10 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 flex items-center justify-center transition-colors cursor-pointer shrink-0">
-                  <FaEye className="text-xs" />
-                </button>
+                {renderUploadControl("pan")}
               </div>
 
               {/* 3. Experience Certificate (if any) */}
@@ -323,16 +310,16 @@ export default function UploadDocument() {
                   </div>
                   <div className="space-y-0.5">
                     <h3 className="text-xs font-bold text-white">
-                      Experience Certificate (if any)
+                      Experience Certificate
                     </h3>
                     <p className="text-[11px] text-slate-400">
                       Upload your experience certificate or any relevant proof
                     </p>
-                    {documents.experience.status === "Uploaded" && (
+                    {documents.experience.status !== "Pending" && (
                       <div className="flex items-center space-x-2 pt-1">
                         <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-900/50 text-[10px] font-semibold px-2 py-0.5 rounded flex items-center space-x-1">
                           <FaCheck className="text-[9px]" />
-                          <span>Uploaded</span>
+                          <span>Selected</span>
                         </span>
                         <span className="text-[11px] text-slate-300 font-medium">
                           {documents.experience.fileName}
@@ -341,21 +328,7 @@ export default function UploadDocument() {
                     )}
                   </div>
                 </div>
-                {documents.experience.status === "Pending" ? (
-                  <button
-                    onClick={() =>
-                      handleSimulateUpload("experience", "Experience_Cert.pdf")
-                    }
-                    className="border border-dashed border-slate-700 hover:border-blue-500 bg-slate-900 hover:bg-blue-950/30 px-6 py-3 rounded-xl flex items-center space-x-2 text-slate-300 hover:text-blue-400 text-xs font-medium transition-colors cursor-pointer shrink-0"
-                  >
-                    <FaFileUpload className="text-blue-500" />
-                    <span>Upload File or drag and drop</span>
-                  </button>
-                ) : (
-                  <button className="w-10 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 flex items-center justify-center transition-colors cursor-pointer shrink-0">
-                    <FaEye className="text-xs" />
-                  </button>
-                )}
+                {renderUploadControl("experience")}
               </div>
 
               {/* 4. Address Proof */}
@@ -367,16 +340,15 @@ export default function UploadDocument() {
                   <div className="space-y-0.5">
                     <h3 className="text-xs font-bold text-white flex items-center space-x-1.5">
                       <span>Address Proof</span>
-                      <span className="text-rose-500">*</span>
                     </h3>
                     <p className="text-[11px] text-slate-400">
                       Upload any government issued address proof
                     </p>
-                    {documents.address.status === "Uploaded" && (
+                    {documents.address.status !== "Pending" && (
                       <div className="flex items-center space-x-2 pt-1">
                         <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-900/50 text-[10px] font-semibold px-2 py-0.5 rounded flex items-center space-x-1">
                           <FaCheck className="text-[9px]" />
-                          <span>Uploaded</span>
+                          <span>Selected</span>
                         </span>
                         <span className="text-[11px] text-slate-300 font-medium">
                           {documents.address.fileName}
@@ -385,21 +357,7 @@ export default function UploadDocument() {
                     )}
                   </div>
                 </div>
-                {documents.address.status === "Pending" ? (
-                  <button
-                    onClick={() =>
-                      handleSimulateUpload("address", "Address_Proof.pdf")
-                    }
-                    className="border border-dashed border-slate-700 hover:border-blue-500 bg-slate-900 hover:bg-blue-950/30 px-6 py-3 rounded-xl flex items-center space-x-2 text-slate-300 hover:text-blue-400 text-xs font-medium transition-colors cursor-pointer shrink-0"
-                  >
-                    <FaFileUpload className="text-blue-500" />
-                    <span>Upload File or drag and drop</span>
-                  </button>
-                ) : (
-                  <button className="w-10 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 flex items-center justify-center transition-colors cursor-pointer shrink-0">
-                    <FaEye className="text-xs" />
-                  </button>
-                )}
+                {renderUploadControl("address")}
               </div>
 
               {/* 5. Profile Photo */}
@@ -411,16 +369,15 @@ export default function UploadDocument() {
                   <div className="space-y-0.5">
                     <h3 className="text-xs font-bold text-white flex items-center space-x-1.5">
                       <span>Profile Photo</span>
-                      <span className="text-rose-500">*</span>
                     </h3>
                     <p className="text-[11px] text-slate-400">
                       Upload a clear recent photo
                     </p>
-                    {documents.profilePhoto.status === "Uploaded" && (
+                    {documents.profilePhoto.status !== "Pending" && (
                       <div className="flex items-center space-x-2 pt-1">
                         <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-900/50 text-[10px] font-semibold px-2 py-0.5 rounded flex items-center space-x-1">
                           <FaCheck className="text-[9px]" />
-                          <span>Uploaded</span>
+                          <span>Selected</span>
                         </span>
                         <span className="text-[11px] text-slate-300 font-medium">
                           {documents.profilePhoto.fileName}
@@ -429,21 +386,7 @@ export default function UploadDocument() {
                     )}
                   </div>
                 </div>
-                {documents.profilePhoto.status === "Pending" ? (
-                  <button
-                    onClick={() =>
-                      handleSimulateUpload("profilePhoto", "Profile_Akhil.jpg")
-                    }
-                    className="border border-dashed border-slate-700 hover:border-blue-500 bg-slate-900 hover:bg-blue-950/30 px-6 py-3 rounded-xl flex items-center space-x-2 text-slate-300 hover:text-blue-400 text-xs font-medium transition-colors cursor-pointer shrink-0"
-                  >
-                    <FaFileUpload className="text-blue-500" />
-                    <span>Upload File or drag and drop</span>
-                  </button>
-                ) : (
-                  <button className="w-10 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 flex items-center justify-center transition-colors cursor-pointer shrink-0">
-                    <FaEye className="text-xs" />
-                  </button>
-                )}
+                {renderUploadControl("profilePhoto")}
               </div>
             </div>
 
@@ -466,11 +409,14 @@ export default function UploadDocument() {
                   &lt; Previous
                 </button>
                 <button
-                  onClick={() =>
-                    alert(
-                      "Documents saved successfully! Ready for final review.",
-                    )
-                  }
+                  onClick={async () => {
+                    try {
+                      await saveDocuments();
+                      nav("/submit");
+                    } catch (error) {
+                      console.error("Failed to save documents", error);
+                    }
+                  }}
                   className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs py-3 px-8 rounded-xl transition-all shadow-lg shadow-blue-600/25 flex items-center justify-center space-x-2 cursor-pointer"
                 >
                   <span>Save & Continue</span>

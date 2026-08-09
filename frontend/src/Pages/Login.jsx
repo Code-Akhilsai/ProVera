@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,8 +25,28 @@ export default function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/login",
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      if (response.status !== 200) {
+        throw new Error("Login failed");
+      }
+      nav("/provider-dashboard", { replace: true });
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
 
   return (
