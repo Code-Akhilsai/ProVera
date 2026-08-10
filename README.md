@@ -69,13 +69,17 @@ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ### Backend
 
 cd backend
+
 npm install
+
 npm run dev
 
 ### Frontend
 
 cd frontend
+
 npm install
+
 npm run dev
 
 ## Author
