@@ -90,7 +90,7 @@ export default function UploadDocument() {
       return;
     }
 
-    await axios.post("http://localhost:3000/api/v1/application", formData, {
+    await axios.post("/api/v1/application", formData, {
       withCredentials: true,
     });
   };

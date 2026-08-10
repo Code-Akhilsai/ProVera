@@ -69,7 +69,7 @@ export default function Register() {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/v1/register",
+        "/api/v1/register",
         {
           full_name: formData.full_name,
           email: formData.email,
@@ -124,7 +124,7 @@ export default function Register() {
 
           <h1 className="text-4xl xl:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">
             Join the Premier Network for{" "}
-            <span className="bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
               Verified Professionals
             </span>
           </h1>

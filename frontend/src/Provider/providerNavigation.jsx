@@ -25,11 +25,7 @@ export function buildProviderMenuItems({ nav, setActiveTab, page }) {
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        "http://localhost:3000/api/v1/logout",
-        {},
-        { withCredentials: true },
-      );
+      await axios.post("/api/v1/logout", {}, { withCredentials: true });
 
       nav(providerRoutes.home);
     } catch (error) {

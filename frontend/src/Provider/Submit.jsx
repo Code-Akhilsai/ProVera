@@ -30,12 +30,8 @@ export default function Submit() {
     const loadData = async () => {
       try {
         const [profileResponse, applicationResponse] = await Promise.all([
-          axios.post(
-            "http://localhost:3000/api/v1/profile",
-            {},
-            { withCredentials: true },
-          ),
-          axios.get("http://localhost:3000/api/v1/application/me", {
+          axios.post("/api/v1/profile", {}, { withCredentials: true }),
+          axios.get("/api/v1/application/me", {
             withCredentials: true,
           }),
         ]);
@@ -56,7 +52,7 @@ export default function Submit() {
     try {
       setSubmitting(true);
       await axios.post(
-        "http://localhost:3000/api/v1/application/submit",
+        "/api/v1/application/submit",
         {},
         { withCredentials: true },
       );

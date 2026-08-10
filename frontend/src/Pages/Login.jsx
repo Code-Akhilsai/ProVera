@@ -34,7 +34,7 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/login",
+        "/api/v1/login",
         {
           email: formData.email,
           password: formData.password,
@@ -89,7 +89,7 @@ export default function Login() {
 
           <h1 className="text-4xl xl:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">
             Welcome Back to Your{" "}
-            <span className="bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
               Management Hub
             </span>
           </h1>

@@ -77,7 +77,7 @@ export default function Profile() {
         },
       };
 
-      await axios.post("http://localhost:3000/api/v1/application", payload, {
+      await axios.post("/api/v1/application", payload, {
         withCredentials: true,
       });
     } catch (error) {
@@ -89,7 +89,7 @@ export default function Profile() {
     const fetchProfile = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/v1/profile",
+          "/api/v1/profile",
           {},
           {
             withCredentials: true,

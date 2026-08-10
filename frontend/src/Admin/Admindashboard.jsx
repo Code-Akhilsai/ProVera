@@ -124,7 +124,7 @@ export default function AdminDashboard() {
 
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/v1/admin/applications/${id}/reject`,
+        `/api/v1/admin/applications/${id}/reject`,
         { remarks: rejectionRemarks },
         {
           withCredentials: true,

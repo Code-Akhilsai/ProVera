@@ -35,10 +35,9 @@ export default function ProviderDashboard() {
   useEffect(() => {
     const loadDashboardState = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/v1/application/me",
-          { withCredentials: true },
-        );
+        const response = await axios.get("/api/v1/application/me", {
+          withCredentials: true,
+        });
 
         const currentApplication = response.data.application;
         const username = response.data.username;

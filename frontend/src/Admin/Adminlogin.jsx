@@ -15,7 +15,7 @@ export default function AdminLogin() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/admin/login",
+        "/api/v1/admin/login",
         {
           email,
           password,
@@ -26,13 +26,9 @@ export default function AdminLogin() {
       );
 
       if (response.status === 200) {
-        const res = await axios.post(
-          "http://localhost:3000/api/v1/admin/dashboard",
-          null,
-          {
-            withCredentials: true,
-          },
-        );
+        const res = await axios.post("/api/v1/admin/dashboard", null, {
+          withCredentials: true,
+        });
 
         if (res.status === 200) {
           nav("/admin-dashboard", { replace: true });
