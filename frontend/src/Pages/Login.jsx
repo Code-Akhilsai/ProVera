@@ -5,15 +5,16 @@ import {
   FaLock,
   FaEye,
   FaEyeSlash,
-  FaArrowRight,
   FaCheck,
 } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const nav = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -27,6 +28,9 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg("");
+    setSuccessMsg("");
+    setIsSubmitting(true);
 
     try {
       const response = await axios.post(
@@ -43,9 +47,18 @@ export default function Login() {
       if (response.status !== 200) {
         throw new Error("Login failed");
       }
-      nav("/provider-dashboard", { replace: true });
+
+      setSuccessMsg("Signed in successfully! Redirecting...");
+      setTimeout(() => {
+        nav("/provider-dashboard", { replace: true });
+      }, 1000);
     } catch (error) {
       console.error("Login error:", error);
+      setErrorMsg(
+        error.response?.data?.message ||
+          "Invalid email or password. Please try again.",
+      );
+      setIsSubmitting(false);
     }
   };
 
@@ -76,7 +89,7 @@ export default function Login() {
 
           <h1 className="text-4xl xl:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">
             Welcome Back to Your{" "}
-            <span className="bg-linear-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
               Management Hub
             </span>
           </h1>
@@ -112,7 +125,6 @@ export default function Login() {
 
         {/* Right Side: Login Box */}
         <div className="lg:col-span-5 w-full flex justify-center">
-          {/* Reduced max-width from max-w-md to max-w-sm to slightly reduce the width */}
           <div className="max-w-sm w-full bg-slate-900 border border-slate-800/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-2xl">
             <div className="space-y-1 text-center lg:text-left">
               <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
@@ -123,26 +135,21 @@ export default function Login() {
               </p>
             </div>
 
-            {/* Google Sign-in Button (Slightly increased height with py-3) */}
-            <button
-              type="button"
-              className="w-full flex items-center justify-center space-x-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-200 font-medium py-3 px-4 rounded-xl text-xs sm:text-sm transition-colors shadow-sm"
-            >
-              <FcGoogle className="text-base" />
-              <span>Continue with Google</span>
-            </button>
+            {errorMsg && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+                <p className="text-red-400 text-xs">{errorMsg}</p>
+              </div>
+            )}
 
-            <div className="flex items-center space-x-3">
-              <div className="grow border-t border-slate-800"></div>
-              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-medium">
-                Or with email
-              </span>
-              <div className="grow border-t border-slate-800"></div>
-            </div>
+            {successMsg && (
+              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3">
+                <p className="text-emerald-400 text-xs">{successMsg}</p>
+              </div>
+            )}
 
             {/* Login Form */}
             <form onSubmit={handleSubmit} className="space-y-3">
-              {/* Email Address (Slightly increased height with py-3) */}
+              {/* Email Address */}
               <div className="space-y-1">
                 <label className="text-[11px] font-medium text-slate-300">
                   Email Address
@@ -163,7 +170,7 @@ export default function Login() {
                 </div>
               </div>
 
-              {/* Password (Slightly increased height with py-3) */}
+              {/* Password */}
               <div className="space-y-1">
                 <label className="text-[11px] font-medium text-slate-300">
                   Password
@@ -184,7 +191,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 focus:outline-none"
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 focus:outline-none cursor-pointer"
                   >
                     {showPassword ? (
                       <FaEyeSlash className="text-xs" />
@@ -204,12 +211,13 @@ export default function Login() {
                 </div>
               </div>
 
-              {/* Submit Button (Slightly increased height with py-3) */}
+              {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 px-4 rounded-xl text-xs sm:text-sm transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-blue-600/25 mt-1"
+                disabled={isSubmitting}
+                className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/50 text-white font-medium py-3 px-4 rounded-xl text-xs sm:text-sm transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-blue-600/25 mt-1 cursor-pointer"
               >
-                <span>Sign In</span>
+                <span>{isSubmitting ? "Signing in..." : "Sign In"}</span>
               </button>
             </form>
 

@@ -7,15 +7,17 @@ import {
   FaEye,
   FaEyeSlash,
   FaCheck,
+  FaTimes,
 } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const nav = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -24,6 +26,15 @@ export default function Register() {
     password: "",
     confirmPassword: "",
   });
+
+  // Password validation state rules
+  const validations = {
+    length: formData.password.length >= 8,
+    uppercase: /[A-Z]/.test(formData.password),
+    number: /[0-9]/.test(formData.password),
+    special: /[^A-Za-z0-9]/.test(formData.password),
+    match: formData.password && formData.password === formData.confirmPassword,
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,11 +47,25 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
+    setSuccessMsg("");
 
-    if (formData.password !== formData.confirmPassword) {
-      setErrorMsg("Passwords do not match");
+    // Validate all requirements before making API call
+    if (
+      !validations.length ||
+      !validations.uppercase ||
+      !validations.number ||
+      !validations.special
+    ) {
+      setErrorMsg("Please meet all password security requirements.");
       return;
     }
+
+    if (!validations.match) {
+      setErrorMsg("Passwords do not match.");
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
       const res = await axios.post(
@@ -57,13 +82,18 @@ export default function Register() {
 
       if (res.status !== 201) {
         setErrorMsg("User failed to register");
+        setIsSubmitting(false);
         return;
       }
 
-      nav("/provider-dashboard");
+      setSuccessMsg("Account created successfully! Redirecting...");
+      setTimeout(() => {
+        nav("/provider-dashboard");
+      }, 1200);
     } catch (error) {
       console.log(error);
       setErrorMsg(error.response?.data?.message || "Registration failed");
+      setIsSubmitting(false);
     }
   };
 
@@ -94,7 +124,7 @@ export default function Register() {
 
           <h1 className="text-4xl xl:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">
             Join the Premier Network for{" "}
-            <span className="bg-linear-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
               Verified Professionals
             </span>
           </h1>
@@ -133,7 +163,7 @@ export default function Register() {
 
         {/* Right Side: Signup Box */}
         <div className="lg:col-span-5 w-full flex justify-center lg:-mt-3">
-          <div className="max-w-md w-full bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-3 shadow-2xl">
+          <div className="max-w-md w-full bg-slate-900 border border-slate-800/80 rounded-2xl p-6 sm:p-8 space-y-4 shadow-2xl">
             <div className="space-y-1 text-center lg:text-left">
               <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                 Create an account
@@ -149,22 +179,11 @@ export default function Register() {
               </div>
             )}
 
-            {/* Google Signup Button */}
-            <button
-              type="button"
-              className="w-full flex items-center justify-center space-x-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-200 font-medium py-2.5 px-4 rounded-xl text-xs sm:text-sm transition-colors shadow-sm"
-            >
-              <FcGoogle className="text-base" />
-              <span>Continue with Google</span>
-            </button>
-
-            <div className="flex items-center space-x-4">
-              <div className="grow border-t border-slate-800"></div>
-              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-medium">
-                Or with email
-              </span>
-              <div className="grow border-t border-slate-800"></div>
-            </div>
+            {successMsg && (
+              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3">
+                <p className="text-emerald-400 text-xs">{successMsg}</p>
+              </div>
+            )}
 
             {/* Registration Form */}
             <form onSubmit={handleSubmit} className="space-y-3.5">
@@ -231,7 +250,7 @@ export default function Register() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 focus:outline-none"
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 focus:outline-none cursor-pointer"
                   >
                     {showPassword ? (
                       <FaEyeSlash className="text-xs" />
@@ -263,7 +282,7 @@ export default function Register() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 focus:outline-none"
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 focus:outline-none cursor-pointer"
                   >
                     {showConfirmPassword ? (
                       <FaEyeSlash className="text-xs" />
@@ -274,12 +293,84 @@ export default function Register() {
                 </div>
               </div>
 
+              {/* Real-time Password Strength and Validation Feedback */}
+              {formData.password && (
+                <div className="bg-slate-950 border border-slate-800/80 rounded-xl p-3 space-y-1.5 text-[11px]">
+                  <p className="text-slate-400 font-medium mb-1">
+                    Password requirements:
+                  </p>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <div
+                      className={`flex items-center space-x-1.5 ${validations.length ? "text-emerald-400" : "text-slate-500"}`}
+                    >
+                      {validations.length ? (
+                        <FaCheck className="text-[10px]" />
+                      ) : (
+                        <FaTimes className="text-[10px]" />
+                      )}
+                      <span>At least 8 characters</span>
+                    </div>
+                    <div
+                      className={`flex items-center space-x-1.5 ${validations.uppercase ? "text-emerald-400" : "text-slate-500"}`}
+                    >
+                      {validations.uppercase ? (
+                        <FaCheck className="text-[10px]" />
+                      ) : (
+                        <FaTimes className="text-[10px]" />
+                      )}
+                      <span>One uppercase letter</span>
+                    </div>
+                    <div
+                      className={`flex items-center space-x-1.5 ${validations.number ? "text-emerald-400" : "text-slate-500"}`}
+                    >
+                      {validations.number ? (
+                        <FaCheck className="text-[10px]" />
+                      ) : (
+                        <FaTimes className="text-[10px]" />
+                      )}
+                      <span>One number</span>
+                    </div>
+                    <div
+                      className={`flex items-center space-x-1.5 ${validations.special ? "text-emerald-400" : "text-slate-500"}`}
+                    >
+                      {validations.special ? (
+                        <FaCheck className="text-[10px]" />
+                      ) : (
+                        <FaTimes className="text-[10px]" />
+                      )}
+                      <span>One special character</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Confirm Password Match Indicator */}
+              {formData.confirmPassword && (
+                <div
+                  className={`text-[11px] flex items-center space-x-1.5 px-1 ${validations.match ? "text-emerald-400" : "text-rose-400"}`}
+                >
+                  {validations.match ? (
+                    <FaCheck className="text-[10px]" />
+                  ) : (
+                    <FaTimes className="text-[10px]" />
+                  )}
+                  <span>
+                    {validations.match
+                      ? "Passwords match perfectly"
+                      : "Passwords do not match"}
+                  </span>
+                </div>
+              )}
+
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 px-4 rounded-xl text-xs sm:text-sm transition-colors flex items-center justify-center space-x-2 pt-2 shadow-lg shadow-blue-600/20 mt-1"
+                disabled={isSubmitting}
+                className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/50 text-white font-medium py-2.5 px-4 rounded-xl text-xs sm:text-sm transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-blue-600/20 mt-2 cursor-pointer"
               >
-                <span>Create Account</span>
+                <span>
+                  {isSubmitting ? "Creating account..." : "Create Account"}
+                </span>
               </button>
             </form>
 
