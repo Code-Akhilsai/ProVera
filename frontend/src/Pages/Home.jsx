@@ -113,9 +113,9 @@ export default function Home() {
         )}
       </header>
 
-      {/* ================= HERO SECTION ================= */}
+      {/* HERO SECTION */}
       <section className="relative pt-20 pb-28 lg:pt-32 lg:pb-36 overflow-hidden border-b border-slate-800/60">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-size-[4rem_4rem]"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-8">
@@ -126,7 +126,7 @@ export default function Home() {
 
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
               Manage Service Providers <br />
-              <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-indigo-500 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-blue-400 via-indigo-300 to-indigo-500 bg-clip-text text-transparent">
                 Seamlessly & Securely
               </span>
             </h1>
@@ -174,7 +174,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= INTERACTIVE PORTAL SIMULATOR SECTION ================= */}
+      {/* INTERACTIVE PORTAL SIMULATOR SECTION */}
       <section id="portal" className="py-24 bg-slate-900/50 scroll-mt-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
@@ -215,7 +215,7 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="p-6 sm:p-10 min-h-[380px] flex items-center">
+            <div className="p-6 sm:p-10 min-h-95 flex items-center">
               {activeTab === "register" && (
                 <div className="w-full grid md:grid-cols-2 gap-8 items-center">
                   <div className="space-y-4">

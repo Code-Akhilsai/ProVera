@@ -12,8 +12,6 @@ const adminMiddleware = async (req, res, next) => {
 
     const decode = jwt.verify(token, process.env.JWT_SECREATE_KEY);
 
-    console.log("Decoded:", decode);
-
     req.admin = decode;
 
     next();
