@@ -124,25 +124,6 @@ export default function UploadDocument() {
               <span>&lt; Back to Dashboard</span>
             </button>
           </div>
-
-          <div className="flex items-center space-x-4">
-            <button className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-colors relative cursor-pointer">
-              <FaBell className="text-sm" />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-rose-500"></span>
-            </button>
-            <div className="flex items-center space-x-3 pl-2 border-l border-slate-800">
-              <img
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250"
-                alt="Akhil Sai"
-                className="w-10 h-10 rounded-full object-cover border-2 border-blue-600/40"
-              />
-              <div className="hidden sm:block text-left">
-                <span className="text-xs font-bold text-white block">
-                  Akhil Sai
-                </span>
-              </div>
-            </div>
-          </div>
         </header>
 
         {/* Upload Documents Content Workspace */}
