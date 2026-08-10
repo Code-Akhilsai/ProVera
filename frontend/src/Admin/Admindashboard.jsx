@@ -40,12 +40,9 @@ export default function AdminDashboard() {
     try {
       setLoading(true);
       setError("");
-      const response = await axios.get(
-        "http://localhost:3000/api/v1/fetch/applications",
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await axios.get("/api/v1/fetch/applications", {
+        withCredentials: true,
+      });
 
       if (response.status === 200) {
         setApplications(response.data.applications || []);
@@ -88,7 +85,7 @@ export default function AdminDashboard() {
   const handleApproveApplication = async (id) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/v1/admin/applications/${id}/approve`,
+        `/api/v1/admin/applications/${id}/approve`,
         {},
         {
           withCredentials: true,
@@ -164,7 +161,7 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     axios
       .post(
-        "http://localhost:3000/api/v1/logout",
+        "/api/v1/logout",
         {},
         {
           withCredentials: true,
