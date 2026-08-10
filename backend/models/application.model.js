@@ -59,10 +59,24 @@ const applicationSchema = new mongoose.Schema(
 
     status: {
       type: String,
+      enum: ["Draft", "Pending Review", "Approved", "Rejected"],
       default: "Draft",
     },
 
     submittedAt: {
+      type: Date,
+    },
+
+    remarks: {
+      type: String,
+      default: "",
+    },
+
+    approvedAt: {
+      type: Date,
+    },
+
+    rejectedAt: {
       type: Date,
     },
   },

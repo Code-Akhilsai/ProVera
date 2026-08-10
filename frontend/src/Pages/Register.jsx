@@ -6,7 +6,6 @@ import {
   FaLock,
   FaEye,
   FaEyeSlash,
-  FaArrowRight,
   FaCheck,
 } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -16,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const nav = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -26,11 +26,21 @@ export default function Register() {
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMsg("Passwords do not match");
+      return;
+    }
 
     try {
       const res = await axios.post(
@@ -45,11 +55,15 @@ export default function Register() {
         },
       );
 
-      if (res.status !== 201) return alert("user failed to register");
+      if (res.status !== 201) {
+        setErrorMsg("User failed to register");
+        return;
+      }
 
       nav("/provider-dashboard");
     } catch (error) {
-      return console.log(error);
+      console.log(error);
+      setErrorMsg(error.response?.data?.message || "Registration failed");
     }
   };
 
@@ -128,6 +142,12 @@ export default function Register() {
                 Enter your details to register as a service provider.
               </p>
             </div>
+
+            {errorMsg && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+                <p className="text-red-400 text-xs">{errorMsg}</p>
+              </div>
+            )}
 
             {/* Google Signup Button */}
             <button

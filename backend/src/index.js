@@ -9,6 +9,8 @@ import profileRouter from "../routes/profile.routes.js";
 import applicationRouter from "../routes/application.routes.js";
 import logoutRouter from "../routes/logout.routes.js";
 import admindashRouter from "../routes/admindash.routes.js";
+import getapplicationRouter from "../routes/getapplication.routes.js";
+import adminRouter from "../routes/admin.routes.js"; // <--- Add this line
 
 dotenv.config();
 const app = express();
@@ -36,6 +38,8 @@ app.use("/api/v1", profileRouter);
 app.use("/api/v1", applicationRouter);
 app.use("/api/v1", logoutRouter);
 app.use("/api/v1", admindashRouter);
+app.use("/api/v1", getapplicationRouter);
+app.use("/api/v1/admin", adminRouter); // <--- Add this line to fix the 404 error
 
 app.listen(port, () =>
   console.log(`Server is running on port http://localhost:${port}`),
