@@ -9,18 +9,59 @@ import UploadDocuments from "./Provider/UploadDocument";
 import Submit from "./Provider/Submit";
 import Adminlogin from "./Admin/Adminlogin";
 import AdminDashboard from "./Admin/Admindashboard";
+import ProtectedRoute from "./Pages/ProtectedRoute.jsx";
+
 function App() {
   return (
     <Routes>
       <Route path={"/"} element={<Home />} />
       <Route path={"/register"} element={<Register />} />
       <Route path={"/login"} element={<Login />} />
-      <Route path={"/provider-dashboard"} element={<ProviderDashboard />} />
-      <Route path={"/profile"} element={<Profile />} />
-      <Route path={"/upload-documents"} element={<UploadDocuments />} />
-      <Route path={"/submit"} element={<Submit />} />
       <Route path={"/adminlogin"} element={<Adminlogin />} />
-      <Route path={"/admin-dashboard"} element={<AdminDashboard />} />
+
+      {/* Protected Provider Routes */}
+      <Route
+        path={"/provider-dashboard"}
+        element={
+          <ProtectedRoute role="user">
+            <ProviderDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={"/profile"}
+        element={
+          <ProtectedRoute role="user">
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={"/upload-documents"}
+        element={
+          <ProtectedRoute role="user">
+            <UploadDocuments />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={"/submit"}
+        element={
+          <ProtectedRoute role="user">
+            <Submit />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Admin Route */}
+      <Route
+        path={"/admin-dashboard"}
+        element={
+          <ProtectedRoute role="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

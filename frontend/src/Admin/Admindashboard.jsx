@@ -459,7 +459,7 @@ export default function AdminDashboard() {
     const skills = selectedApplication.service_info?.skills || [];
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
         <nav className="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div className="flex items-center gap-2">
