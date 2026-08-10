@@ -9,9 +9,7 @@ export default function ProtectedRoute({ children, role }) {
     const checkAuth = async () => {
       try {
         const endpoint =
-          role === "admin"
-            ? "http://localhost:3000/api/v1/admin/dashboard"
-            : "http://localhost:3000/api/v1/profile";
+          role === "admin" ? "/api/v1/admin/dashboard" : "/api/v1/profile";
 
         const res = await axios.post(endpoint, null, {
           withCredentials: true,
