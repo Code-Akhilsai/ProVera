@@ -82,6 +82,12 @@ npm install
 
 npm run dev
 
+## Admin Login
+
+Email: admin@gmail.com  
+
+Password: admin123
+
 ## Author
 
 Akhil
