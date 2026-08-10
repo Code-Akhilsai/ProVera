@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://provera-4xh8.onrender.com",
+        target: "http://localhost:3000",
         changeOrigin: true,
       },
     },
