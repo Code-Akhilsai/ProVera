@@ -315,7 +315,17 @@ export default function Profile() {
                       Master Electrical & Wiring
                     </option>
                     <option value="plumbing">Plumbing & Pipe Fitting</option>
-                    <option value="hvac">HVAC Maintenance</option>
+                    <option value="hvac">HVAC & AC Maintenance</option>
+                    <option value="carpentry">
+                      Carpentry & Furniture Assembly
+                    </option>
+                    <option value="appliance">Home Appliance Repair</option>
+                    <option value="painting">
+                      Interior & Exterior Painting
+                    </option>
+                    <option value="cleaning">Deep Home Cleaning</option>
+                    <option value="pest_control">Pest Control Services</option>
+                    <option value="cctv">CCTV & Security Installation</option>
                   </select>
                 </div>
                 <div className="space-y-1.5">
@@ -332,7 +342,8 @@ export default function Profile() {
                     <option value="0-1">0 - 1 Years</option>
                     <option value="1-3">1 - 3 Years</option>
                     <option value="3-5">3 - 5 Years</option>
-                    <option value="5+">5+ Years</option>
+                    <option value="5-10">5 - 10 Years</option>
+                    <option value="10+">10+ Years</option>
                   </select>
                 </div>
               </div>
@@ -396,6 +407,9 @@ export default function Profile() {
                     <option value="telangana">Telangana</option>
                     <option value="maharashtra">Maharashtra</option>
                     <option value="karnataka">Karnataka</option>
+                    <option value="delhi">Delhi NCR</option>
+                    <option value="tamil_nadu">Tamil Nadu</option>
+                    <option value="uttar_pradesh">Uttar Pradesh</option>
                   </select>
                 </div>
                 <div className="space-y-1.5">
@@ -411,7 +425,11 @@ export default function Profile() {
                     <option value="">Select city</option>
                     <option value="hyderabad">Hyderabad</option>
                     <option value="secunderabad">Secunderabad</option>
-                    <option value="warangal">Warangal</option>
+                    <option value="mumbai">Mumbai</option>
+                    <option value="pune">Pune</option>
+                    <option value="bengaluru">Bengaluru</option>
+                    <option value="new_delhi">New Delhi</option>
+                    <option value="chennai">Chennai</option>
                   </select>
                 </div>
               </div>
@@ -423,7 +441,7 @@ export default function Profile() {
                 <input
                   type="text"
                   name="address"
-                  placeholder="Enter your full address"
+                  placeholder="Enter your full address (e.g., Street, Landmark)"
                   value={formData.address}
                   onChange={handleInputChange}
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-xs sm:text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500"
