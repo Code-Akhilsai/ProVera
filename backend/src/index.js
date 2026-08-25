@@ -51,6 +51,10 @@ app.use(cookieParser());
 
 await connectDB();
 
+app.get("/", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 //routes
 app.use("/api/v1", userRouter);
 app.use("/api/v1", loginRouter);
