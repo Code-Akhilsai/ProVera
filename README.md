@@ -2,6 +2,10 @@
 
 ProVera is a MERN-based Service Provider Onboarding Portal.
 
+## Live Site
+
+https://pro-vera.netlify.app
+
 ## Features
 
 ### Provider
@@ -49,10 +53,15 @@ Register → Complete Profile → Upload Documents → Review → Submit → Adm
 Create a `.env` file in the backend:
 
 PORT=3000
-MONGO_URI=your_mongodb_uri
+
+MONGO_URI=your_mongodb_uri 
+
 JWT_SECRET_KEY=your_jwt_secret
+
 CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+
 CLOUDINARY_API_KEY=your_cloudinary_api_key
+
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 
 ## Installation
@@ -60,14 +69,24 @@ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ### Backend
 
 cd backend
+
 npm install
+
 npm run dev
 
 ### Frontend
 
 cd frontend
+
 npm install
+
 npm run dev
+
+## Admin Login
+
+Email: admin@gmail.com  
+
+Password: admin123
 
 ## Author
 
