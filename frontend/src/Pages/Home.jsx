@@ -490,7 +490,7 @@ export default function Home() {
               href="#requirements"
               className="hover:text-slate-300 transition-colors"
             >
-              Requirements
+              Components
             </a>
           </div>
         </div>
