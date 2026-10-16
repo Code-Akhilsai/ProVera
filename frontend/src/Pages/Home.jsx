@@ -432,7 +432,7 @@ export default function Home() {
               </h4>
               <p className="text-sm text-slate-400 leading-relaxed">
                 Complete profile management, service category selections, skill
-                lists, location info, and live status feedback[cite: 1].
+                lists, location info, and live status feedback.
               </p>
             </div>
 
@@ -445,7 +445,7 @@ export default function Home() {
               </h4>
               <p className="text-sm text-slate-400 leading-relaxed">
                 Central dashboard with aggregated statistics, document previews,
-                instant search filters, and rejection remarks[cite: 1].
+                instant search filters, and rejection remarks.
               </p>
             </div>
 
@@ -458,7 +458,7 @@ export default function Home() {
               </h4>
               <p className="text-sm text-slate-400 leading-relaxed">
                 Built using React, Node.js, Express, and MongoDB with secure JWT
-                authentication and protected routing[cite: 1].
+                authentication and protected routing.
               </p>
             </div>
           </div>
