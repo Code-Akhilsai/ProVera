@@ -51,7 +51,7 @@ export default function Home() {
               href="#requirements"
               className="hover:text-white transition-colors"
             >
-              Requirements
+               Components
             </a>
           </nav>
 
@@ -99,7 +99,7 @@ export default function Home() {
               onClick={() => setMobileMenuOpen(false)}
               className="block py-2 text-slate-300 font-medium"
             >
-              Requirements
+              Components
             </a>
             <div className="pt-4 flex flex-col space-y-2">
               <button
@@ -134,7 +134,7 @@ export default function Home() {
             <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
               A complete platform allowing service providers to register,
               complete profiles, upload verification documents, and submit
-              applications for admin verification[cite: 1].
+              applications for admin verification.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
@@ -186,7 +186,7 @@ export default function Home() {
             </h3>
             <p className="text-slate-400 text-sm">
               Experience the core workflows built for service providers and
-              administrators[cite: 1].
+              administrators.
             </p>
           </div>
 
@@ -228,7 +228,7 @@ export default function Home() {
                     <p className="text-slate-400 text-sm leading-relaxed">
                       Providers register securely, select service categories,
                       define skills & experience, and specify service
-                      locations[cite: 1].
+                      locations.
                     </p>
                     <ul className="space-y-2 text-sm text-slate-300">
                       <li className="flex items-center space-x-2">
